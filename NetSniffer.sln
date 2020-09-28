@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PcapNGUtils", "PcapNGUtils\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PcapNGUtils.Test", "PcapNGUtils.Test\PcapNGUtils.Test.csproj", "{B78FE746-5D82-4AC9-973E-D5C655437EF7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EthernetCapture", "EthernetCapture\EthernetCapture.csproj", "{4A658486-8A6A-455C-B35B-AD1C7BB3EBD6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B78FE746-5D82-4AC9-973E-D5C655437EF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B78FE746-5D82-4AC9-973E-D5C655437EF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B78FE746-5D82-4AC9-973E-D5C655437EF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A658486-8A6A-455C-B35B-AD1C7BB3EBD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A658486-8A6A-455C-B35B-AD1C7BB3EBD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A658486-8A6A-455C-B35B-AD1C7BB3EBD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A658486-8A6A-455C-B35B-AD1C7BB3EBD6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

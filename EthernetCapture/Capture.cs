@@ -190,7 +190,7 @@ namespace EthernetCapture
                     temp_ip = new IPAddress(temp_ip_destaddr);
                     e.DestinationAddress = temp_ip.ToString();
                     temp_srcport = *(short*)&fixed_buf[e.HeaderLength];
-                    e.OriginationPort = ntohs(Portheader->sport).ToString();
+                    e.OriginationPort = (Portheader->sport).ToString();
                     int acb = IPAddress.NetworkToHostOrder(Portheader->sport);
                     e.DestinationPort = ntohs(Portheader->dport).ToString();
                     int abc = IPAddress.NetworkToHostOrder(Portheader->dport);

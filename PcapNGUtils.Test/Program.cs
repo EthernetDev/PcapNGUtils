@@ -32,6 +32,8 @@ namespace PcapNGUtils.Test
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(" #异常：" + e.Message+System.Environment.NewLine);
                 Console.ResetColor();
+                Console.WriteLine("\t 按任意键退出.");
+                Console.ReadKey();
             }
           
         }
