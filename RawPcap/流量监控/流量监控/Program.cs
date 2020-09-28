@@ -27,20 +27,24 @@ namespace 流量监控
         static List<string> Log = new List<string>();
         static long AllOut = 0;
         static long AllIn = 0;
+
         static void Main(string[] args)
         {
             if (!Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "Log"))
                 Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "Log");
             Port = 25565;
+
             Console.WriteLine("本机IP地址如下：");
             iPAddress = Dns.GetHostAddresses(Dns.GetHostName());
             for (int i = 0; i < iPAddress.Length; i++)
                 if (iPAddress[i].AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) Console.WriteLine("{" + i + "}  IP协议版本：" + iPAddress[i].AddressFamily.ToString() + "V4  地址：" + iPAddress[i].ToString());
                 else Console.WriteLine("{" + i + "}  IP协议版本：" + iPAddress[i].AddressFamily.ToString() + "  地址：" + iPAddress[i].ToString());
-            cIP: Console.WriteLine("请选择IP,多选使用';'隔开\r\n输入*为全部抓包");
+                cIP: Console.WriteLine("请选择IP,多选使用';'隔开\r\n输入*为全部抓包");
+           
             string IPB = Console.ReadLine();
             string[] IPBuffer = IPB.Split(';');
             List<int> IPID = new List<int>();
+
             if (IPB == "*")
                 for (int i = 0; i < iPAddress.Length; i++)
                     IPID.Add(i);
@@ -52,21 +56,49 @@ namespace 流量监控
                     else if (iPAddress.Length <= result || result < 0) { Console.ForegroundColor = ConsoleColor.Red; Console.WriteLine("目标IP不存在"); Console.ResetColor(); goto cIP; }
                     else { IPID.Add(result); }
                 }
+
             cPort: Console.WriteLine("请输入端口");
-            try { Port = int.Parse(Console.ReadLine()); } catch { Console.WriteLine("输入字符串有误\r\n请重新输入");goto cPort; }
-            if (Port < 1 || Port > 65535) { Console.ForegroundColor = ConsoleColor.Red; Console.WriteLine("输入有误"); Console.ResetColor(); goto cPort; }
-            cTh: Console.WriteLine("请输入每个套接字要设置的抓包线程\r\n线程越多越灵敏\r\n由于设置套接字为阻塞模式\r\n所以不会占用过多CPU资源\r\n不清楚电脑网络情况的可以设置20线程\r\n不进行大流量操作的可以设置10线程");
+            try { 
+                Port = int.Parse(Console.ReadLine()); 
+            } 
+            catch { 
+                Console.WriteLine("输入字符串有误\r\n请重新输入");
+                goto cPort; 
+            }
+
+            if (Port < 1 || Port > 65535) 
+            { Console.ForegroundColor = ConsoleColor.Red; Console.WriteLine("输入有误");
+                Console.ResetColor();
+                goto cPort; 
+            }
+
+        cTh: Console.WriteLine("请输入每个套接字要设置的抓包线程\r\n"
+            +"线程越多越灵敏\r\n由于设置套接字为阻塞模式\r\n"
+            +"所以不会占用过多CPU资源\r\n"
+            +"不清楚电脑网络情况的可以设置20线程\r\n"
+            +"不进行大流量操作的可以设置10线程");
             int Threads = int.Parse(Console.ReadLine());
-            if (Threads < 2 || Threads > 1000) { Console.ForegroundColor = ConsoleColor.Red; Console.WriteLine("输入有误，最小2线程最大1000线程！"); Console.ResetColor(); goto cTh; }
+            if (Threads < 2 || Threads > 1000) 
+            { Console.ForegroundColor = ConsoleColor.Red; 
+                Console.WriteLine("输入有误，最小2线程最大1000线程！"); 
+                Console.ResetColor(); 
+                goto cTh; 
+            }
+
             Thread thread = new Thread(new ThreadStart(() =>
             {
                 while (true)
-                    if (Console.ReadKey().Modifiers == ConsoleModifiers.Control && Console.ReadKey().Key == ConsoleKey.S)
+                    if (Console.ReadKey().Modifiers == ConsoleModifiers.Control
+                    && Console.ReadKey().Key == ConsoleKey.S)
                     {
-                        File.AppendAllLines(AppDomain.CurrentDomain.BaseDirectory + "log/" + DateTime.Now.Year + "." + DateTime.Now.Month + "." + DateTime.Now.Day + ".last.log", Log.AsEnumerable());
+                        File.AppendAllLines(AppDomain.CurrentDomain.BaseDirectory + "log/" 
+                            + DateTime.Now.Year + "." + DateTime.Now.Month + "." 
+                            + DateTime.Now.Day + ".last.log"
+                            , Log.AsEnumerable());
                         Log = new List<string>();
                     }
             }));
+
             thread.IsBackground = true;
             thread.Start();
             for (int i = 0; i < IPID.Count; i++)
@@ -78,14 +110,19 @@ namespace 流量监控
                 rawSocket.Run();
             }
             Thread.Sleep(100);
+
+            while (true) { }
+
             long Last = 0;
             long OutLast = 0;
             long alloutLast = 0;
             long allinLast = 0;
             long inLast = 0;
+            /*
             Stopwatch stopwatch = new Stopwatch();
             SetConsoleCtrlHandler(cancelHandler, true);
             stopwatch.Start();
+
             while (true)
             {
                 Thread.Sleep(1000);
@@ -106,6 +143,7 @@ namespace 流量监控
                 allin = allin / stopwatch.Elapsed.TotalSeconds;
                 IN = IN / stopwatch.Elapsed.TotalSeconds;
                 stopwatch.Restart();
+
                 // Console.Clear();
                 string OutPut = "*************************************************************\r\n";
                 OutPut = OutPut + "%     数据名称      |        数据       |        单位       %\r\n";
@@ -129,7 +167,9 @@ namespace 流量监控
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("数据包统计: TCP：" + TCP + "个   UDP：" + UDP + "个   ICMP：" + ICMP + "个   IGMP：" + IGMP + "个   UNKNOWN：" + UNKNOWN + "个");
                 Console.ResetColor();
+
                 Log.Add("[" + DateTime.Now.ToLongTimeString() + "]" + Out);
+
                 if (DateTime.Now.Hour == 0 && DateTime.Now.Minute == 0 && DateTime.Now.Second < 10)
                 {
                     if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "log/" + DateTime.Now.Year + "." + DateTime.Now.Month + "." + DateTime.Now.Day + ".log"))
@@ -151,7 +191,9 @@ namespace 流量监控
                 }
             }
             // Console.ReadLine();
+            */
         }
+
         public delegate bool ControlCtrlDelegate(int CtrlType);
         [DllImport("kernel32.dll")]
         private static extern bool SetConsoleCtrlHandler(ControlCtrlDelegate HandlerRoutine, bool Add);
@@ -170,6 +212,7 @@ namespace 流量监控
             }
             return false;
         }
+
         static public void Pack(Object sender, PacketArrivedEventArgs args)
         {
             //Console.Clear();
@@ -184,10 +227,12 @@ namespace 流量监控
                 IGMP++;
             if (args.Protocol == "UNKNOWN")
                 UNKNOWN++;
+
             //if (args.OriginationPort == Port.ToString() && iPAddress.Contains(IPAddress.Parse(args.OriginationAddress)))
             //    Out = Out + args.PacketLength;
             //if (args.DestinationPort == Port.ToString() && iPAddress.Contains(IPAddress.Parse(args.DestinationAddress)))
             //In = In + args.PacketLength;
+
             if (iPAddress.Contains(IPAddress.Parse(args.OriginationAddress)))
             {
                 AllOut = AllOut + args.PacketLength;
@@ -202,15 +247,16 @@ namespace 流量监控
                     In = In + args.PacketLength;
                 }
             }
-            //Console.WriteLine("目标IP：" + args.DestinationAddress);
-            //Console.WriteLine("目标端口：" + args.DestinationPort);
-            //Console.WriteLine("IP协议版本：" + args.IPVersion);
-            //Console.WriteLine("目标地址：" + args.OriginationAddress);
-            //Console.WriteLine("目标端口：" + args.OriginationPort);
-            //Console.WriteLine("数据包长度" + args.PacketLength);
-            //Console.WriteLine("协议：" + args.Protocol);
+
+            Console.WriteLine("目标IP：" + args.DestinationAddress
+                +"\t目标端口：" + args.DestinationPort
+                +"\t协议版本：" + args.IPVersion
+                +"\t目标地址：" + args.OriginationAddress
+                +"\t目标端口：" + args.OriginationPort
+                +"\tIP包长度:" + args.PacketLength
+                +"\t协议类型：" + args.Protocol);
             //Console.WriteLine("已接收字节数：" + Length);
-            //Console.WriteLine(GetSpand(Length));
+           // Console.WriteLine(GetSpand(Length));
         }
         static public string GetSpand(double Length, bool IsBit)
         {

@@ -12,3 +12,16 @@ C:\Users\admin\Downloads\RawPcap-master\RawPcap-master\流量监控\流量监控
 C:\Users\admin\Downloads\RawPcap-master\RawPcap-master\流量监控\流量监控\obj\Debug\流量监控.csproj.CoreCompileInputs.cache
 C:\Users\admin\Downloads\RawPcap-master\RawPcap-master\流量监控\流量监控\obj\Debug\流量监控.exe
 C:\Users\admin\Downloads\RawPcap-master\RawPcap-master\流量监控\流量监控\obj\Debug\流量监控.pdb
+E:\workspace\NetworkDemo\PcapNGUtils-github\RawPcap\流量监控\流量监控\bin\Debug\流量监控.exe.config
+E:\workspace\NetworkDemo\PcapNGUtils-github\RawPcap\流量监控\流量监控\bin\Debug\流量监控.exe
+E:\workspace\NetworkDemo\PcapNGUtils-github\RawPcap\流量监控\流量监控\bin\Debug\流量监控.pdb
+E:\workspace\NetworkDemo\PcapNGUtils-github\RawPcap\流量监控\流量监控\obj\Debug\流量监控.csprojAssemblyReference.cache
+E:\workspace\NetworkDemo\PcapNGUtils-github\RawPcap\流量监控\流量监控\obj\Debug\流量监控.csproj.CoreCompileInputs.cache
+E:\workspace\NetworkDemo\PcapNGUtils-github\RawPcap\流量监控\流量监控\obj\Debug\流量监控.exe
+E:\workspace\NetworkDemo\PcapNGUtils-github\RawPcap\流量监控\流量监控\obj\Debug\流量监控.pdb
+E:\workspace\NetDemo\RawPcap\流量监控\流量监控\bin\Debug\流量监控.exe.config
+E:\workspace\NetDemo\RawPcap\流量监控\流量监控\bin\Debug\流量监控.exe
+E:\workspace\NetDemo\RawPcap\流量监控\流量监控\bin\Debug\流量监控.pdb
+E:\workspace\NetDemo\RawPcap\流量监控\流量监控\obj\Debug\流量监控.csprojAssemblyReference.cache
+E:\workspace\NetDemo\RawPcap\流量监控\流量监控\obj\Debug\流量监控.exe
+E:\workspace\NetDemo\RawPcap\流量监控\流量监控\obj\Debug\流量监控.pdb

@@ -4,16 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B78FE746-5D82-4AC9-973E-D5C655437EF7}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>PcapNGUtils.Test</RootNamespace>
-    <AssemblyName>PcapNGUtils.Test</AssemblyName>
+    <ProjectGuid>{4A658486-8A6A-455C-B35B-AD1C7BB3EBD6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EthernetCapture</RootNamespace>
+    <AssemblyName>EthernetCapture</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -21,18 +21,20 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -42,17 +44,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Capture.cs" />
+    <Compile Include="LogType.cs" />
+    <Compile Include="CaptureHelper.cs" />
+    <Compile Include="PacketArrivedEventArgs.cs" />
+    <Compile Include="PacketStruct.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Setting.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\EthernetCapture\EthernetCapture.csproj">
-      <Project>{4a658486-8a6a-455c-b35b-ad1c7bb3ebd6}</Project>
-      <Name>EthernetCapture</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PcapNGUtils\PcapNGUtils.csproj">
       <Project>{21b1bff5-d28d-41df-8186-96d6e61fc954}</Project>
       <Name>PcapNGUtils</Name>

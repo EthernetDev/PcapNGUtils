@@ -199,6 +199,7 @@ namespace 流量监控
             tcp_hdr* pTcpheader;//TCP头结构体指针  
             icmp_hdr* pIcmpheader;//ICMP头结构体指针 
             IPHeader2* Portheader;//端口指针
+
             fixed (byte* fixed_buf = buf)
             {
                 int lentcp, lenudp, lenicmp, lenip;
@@ -207,6 +208,7 @@ namespace 流量监控
                 pTcpheader = (tcp_hdr*)(fixed_buf + sizeof(IPHeader)); //TCP头结构体指针 
                 pUdpheader = (udp_hdr*)(fixed_buf + sizeof(IPHeader));
                 pIcmpheader = (icmp_hdr*)(fixed_buf + sizeof(IPHeader));
+
                 //计算各种包的长度（只有判断是否是该包后才有意义，先计算出来）
                 lenip = ntohs(head->ip_totallength);
                 try
@@ -216,17 +218,28 @@ namespace 流量监控
                     lenicmp = ntohs(head->ip_totallength) - (sizeof(IPHeader) + sizeof(icmp_hdr));
                 }
                 catch { }
+
                 e.HeaderLength = (uint)(head->ip_verlen & 0x0F) << 2;
                 temp_protocol = head->ip_protocol;
                 temp_dstport = *(short*)&fixed_buf[e.HeaderLength + 2];
                 switch (temp_protocol)
                 {
-                    case 1: e.Protocol = "ICMP:"; break;
-                    case 2: e.Protocol = "IGMP:"; break;
-                    case 6: e.Protocol = "TCP:"; e.DestinationPort = ntohs(pTcpheader->dport).ToString(); break;
-                    case 17: e.Protocol = "UDP:"; e.DestinationPort = ntohs(pUdpheader->dport).ToString(); break;
-                    default: e.Protocol = "UNKNOWN"; break;
+                    case 1: 
+                        e.Protocol = "ICMP:"; break;
+                    case 2: 
+                        e.Protocol = "IGMP:"; break;
+                    case 6: 
+                        e.Protocol = "TCP:"; 
+                        e.DestinationPort = ntohs(pTcpheader->dport).ToString(); 
+                        break;
+                    case 17: 
+                        e.Protocol = "UDP:"; 
+                        e.DestinationPort = ntohs(pUdpheader->dport).ToString();
+                        break;
+                    default: 
+                        e.Protocol = "UNKNOWN"; break;
                 }
+
                 temp_version = (uint)(head->ip_verlen & 0xF0) >> 4;
                 e.IPVersion = temp_version.ToString();
                 temp_ip_srcaddr = head->ip_srcaddr;
@@ -248,6 +261,7 @@ namespace 流量监控
                 //把buf中的包中内容赋给PacketArrivedEventArgs中的MessageBuffer
                 Array.Copy(buf, (int)e.HeaderLength, e.MessageBuffer, 0, (int)e.MessageLength);
             }
+
             //引发PacketArrival事件
             OnPacketArrival(e);
         }
