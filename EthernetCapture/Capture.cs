@@ -163,6 +163,8 @@ namespace EthernetCapture
                     e.HeaderLength = (uint)(head->ip_verlen & 0x0F) << 2;
                     temp_protocol = head->ip_protocol;
                     temp_dstport = *(short*)&fixed_buf[e.HeaderLength + 2];
+
+
                     switch (temp_protocol)
                     {
                         case 1:
@@ -171,11 +173,16 @@ namespace EthernetCapture
                             e.Protocol = "IGMP"; break;
                         case 6:
                             e.Protocol = "TCP";
-                            e.DestinationPort = ntohs(pTcpheader->dport).ToString();
+                            e.DestinationPort = ntoUint(pTcpheader->dport);
+                            e.PacketLength = (uint)lenip+ (uint)(sizeof(IPHeader) + sizeof(tcp_hdr));
                             break;
                         case 17:
                             e.Protocol = "UDP";
-                            e.DestinationPort = ntohs(pUdpheader->dport).ToString();
+                            e.DestinationPort = ntoUint(pUdpheader->dport);
+                            e.PacketLength = (uint)lenudp+ (uint)(sizeof(IPHeader) + sizeof(udp_hdr));
+                            if (e.DestinationPort == 2368)
+                                Console.WriteLine(" Port:2368\n\r");
+
                             break;
                         default:
                             e.Protocol = "UNKNOWN"; break;
@@ -190,12 +197,14 @@ namespace EthernetCapture
                     temp_ip = new IPAddress(temp_ip_destaddr);
                     e.DestinationAddress = temp_ip.ToString();
                     temp_srcport = *(short*)&fixed_buf[e.HeaderLength];
-                    e.OriginationPort = (Portheader->sport).ToString();
-                    int acb = IPAddress.NetworkToHostOrder(Portheader->sport);
-                    e.DestinationPort = ntohs(Portheader->dport).ToString();
+                    e.OriginationPort = (Portheader->sport);
+
+                    //int acb = IPAddress.NetworkToHostOrder(Portheader->sport);
+                    //e.DestinationPort = ntoUint(Portheader->dport);
                     int abc = IPAddress.NetworkToHostOrder(Portheader->dport);
-                    e.PacketLength = (uint)lenip;
-                    e.MessageLength = (uint)lenip - e.HeaderLength;
+
+                    //e.PacketLength = (uint)lenip;
+                    e.MessageLength = e.PacketLength - e.HeaderLength;
                     e.ReceiveBuffer = new byte[e.PacketLength];
                     e.IPHeaderBuffer = new byte[e.HeaderLength];
                     e.MessageBuffer = new byte[e.MessageLength];
@@ -226,6 +235,7 @@ namespace EthernetCapture
                     byte[] Buffer = new byte[65535];
                     try
                     {
+                        //此处没有接收数据包MAC和数据包类型数据，所以少了14字节
                         received_bytes = socket.Receive(Buffer, 0, 65535, SocketFlags.None);
                         //System.Diagnostics.Debug.WriteLine(BitConverter.ToString(Buffer, 16));
                     }
@@ -262,13 +272,19 @@ namespace EthernetCapture
             Receive(receive_buf_bytes, received_bytes);
             if (KeepRunning) Run();
         }
+
         public int ntohs(ushort n)
         {
             byte[] b = BitConverter.GetBytes(n);
             Array.Reverse(b);
             return (int)BitConverter.ToInt16(b, 0);
         }
-
+        public uint ntoUint(ushort n)
+        {
+            byte[] b = BitConverter.GetBytes(n);
+            Array.Reverse(b);
+            return (uint)BitConverter.ToInt16(b, 0);
+        }
         public delegate void PacketArrivedEventHandler(
          Object sender, PacketArrivedEventArgs args);
 

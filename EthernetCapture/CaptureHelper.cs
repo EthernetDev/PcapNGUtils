@@ -123,7 +123,7 @@ namespace EthernetCapture
                 return;
 
             if (this.capturedIp.ToString()!=args.DestinationAddress
-                || args.DestinationPort != Setting.Instance.CapturedPort.ToString())
+                || args.DestinationPort != Setting.Instance.CapturedPort)
             {
                 return;
             }

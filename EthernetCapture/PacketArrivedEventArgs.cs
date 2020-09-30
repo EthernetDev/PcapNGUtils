@@ -21,8 +21,8 @@ namespace EthernetCapture
         public PacketArrivedEventArgs()
         {
             this.protocol = "";
-            this.destination_port = "";
-            this.origination_port = "";
+            this.destination_port = 0;
+            this.origination_port = 0;
             this.destination_address = "";
             this.origination_address = "";
             this.ip_version = "";
@@ -46,7 +46,7 @@ namespace EthernetCapture
         /// <summary>
         /// 目标端口
         /// </summary>
-        public string DestinationPort
+        public uint DestinationPort
         {
             get { return destination_port; }
             set { destination_port = value; }
@@ -54,7 +54,7 @@ namespace EthernetCapture
         /// <summary>
         /// 源端口
         /// </summary>
-        public string OriginationPort
+        public uint OriginationPort
         {
             get { return origination_port; }
             set { origination_port = value; }
@@ -131,8 +131,8 @@ namespace EthernetCapture
             set { message_bytes = value; }
         }
         private string protocol;
-        private string destination_port;
-        private string origination_port;
+        private uint destination_port;
+        private uint origination_port;
         private string destination_address;
         private string origination_address;
         private string ip_version;
