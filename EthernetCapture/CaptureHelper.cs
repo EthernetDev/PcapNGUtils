@@ -10,9 +10,11 @@ using PcapngUtils.Pcap;
 using PcapngUtils.PcapNG;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -107,7 +109,7 @@ namespace EthernetCapture
             rawSocket.Stop();
         }
 
-        PcapWriter writer = new PcapWriter(@"d:\temp\new1.pcap");
+        PcapWriter writer = new PcapWriter(@"c:\temp\abc1001.pcap");
 
         /// <summary>
         /// 捕捉事件
@@ -152,9 +154,7 @@ namespace EthernetCapture
                 
             });
         }
-
-        
-
+              
         private string GetSpand(double Length, bool IsBit)
         {
             if (IsBit)
@@ -186,5 +186,106 @@ namespace EthernetCapture
             for (int i = Length; i < 22; i++) { Return = Return + " "; }
             return Return;
         }
+
+        /// <summary>
+        /// 创建路径
+        /// </summary>
+        /// <param name="folder">要创建的路径</param>
+        /// <returns>创建的路径</returns>
+        /// <exception cref="Exception">异常</exception>
+        private string CreateFolder(string folder)
+        {
+            try
+            {
+                //先解析日期格式
+                if (folder.Contains("{") && folder.Contains("}"))
+                {
+                    string ps = Regex.Match(folder, @"\{(.*)\}",
+                        RegexOptions.Singleline).Groups[1].Value;//大括号{}
+                    folder = folder.Replace("{" + ps + "}", DateTime.Now.ToString(ps));
+                }
+
+                string dir = "";
+
+                //再检查逐层检查路径是否存在
+                if (folder.Contains(Path.DirectorySeparatorChar))
+                {
+                    string[] arr = folder.Split(Path.DirectorySeparatorChar);
+
+                    for (int i = 0; i < arr.Length; i++)
+                    {
+                        if (i == 0)
+                        {
+                            if (arr[0].Contains(":"))
+                            {
+                                if (!Directory.Exists(arr[0])) Directory.CreateDirectory(arr[0]);
+                                dir = arr[i];
+                            }
+                            else
+                            {
+                                dir = Environment.CurrentDirectory + Path.DirectorySeparatorChar + arr[0];
+                                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                            }
+                        }
+                        else
+                        {
+                            dir += Path.DirectorySeparatorChar + arr[i];
+                            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                        }
+                    }
+                }
+                else if (folder.Trim() != "")
+                {
+                    dir = Environment.CurrentDirectory + Path.DirectorySeparatorChar + folder;
+                    if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                }
+                else
+                {
+                    throw new Exception("Folder is empty string.");
+                }
+
+                return dir;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        /// <summary>
+        /// 初始化数据文件
+        /// </summary>
+        /// <param name="pcapFile">文件路径</param>
+        private void createFile(string pcapFile)
+        {
+            try
+            {
+                //先解析日期格式
+                if (pcapFile.Contains("{") && pcapFile.Contains("}"))
+                {
+                    string ps = Regex.Match(pcapFile, @"\{(.*)\}",
+                        RegexOptions.Singleline).Groups[1].Value;//大括号{}
+                    pcapFile = pcapFile.Replace("{" + ps + "}", DateTime.Now.ToString(ps));
+                }
+
+                string filePath = "";
+                if (pcapFile.Contains(Path.DirectorySeparatorChar))
+                {
+                    string folder = pcapFile.Substring(0, pcapFile.LastIndexOf(Path.DirectorySeparatorChar));
+                    string filename = pcapFile.Substring(pcapFile.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+
+                    folder = CreateFolder(folder);
+                    filePath = folder + Path.DirectorySeparatorChar + filename;
+                }
+
+                //logSW = new StreamWriter(filePath, true, Encoding.UTF8);
+            }
+            catch (Exception e)
+            {
+                //await WriteLog(EnumLogTypes.ERROR, e.Message);
+                throw e;
+            }
+        }
+
     }
 }

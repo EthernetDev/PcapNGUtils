@@ -179,10 +179,7 @@ namespace EthernetCapture
                         case 17:
                             e.Protocol = "UDP";
                             e.DestinationPort = ntoUint(pUdpheader->dport);
-                            e.PacketLength = (uint)lenudp+ (uint)(sizeof(IPHeader) + sizeof(udp_hdr));
-                            if (e.DestinationPort == 2368)
-                                Console.WriteLine(" Port:2368\n\r");
-
+                            e.PacketLength = (uint)lenudp+ (uint)(sizeof(IPHeader) + sizeof(udp_hdr));                           
                             break;
                         default:
                             e.Protocol = "UNKNOWN"; break;
@@ -201,7 +198,7 @@ namespace EthernetCapture
 
                     //int acb = IPAddress.NetworkToHostOrder(Portheader->sport);
                     //e.DestinationPort = ntoUint(Portheader->dport);
-                    int abc = IPAddress.NetworkToHostOrder(Portheader->dport);
+                    //int abc = IPAddress.NetworkToHostOrder(Portheader->dport);
 
                     //e.PacketLength = (uint)lenip;
                     e.MessageLength = e.PacketLength - e.HeaderLength;
@@ -213,8 +210,23 @@ namespace EthernetCapture
                     Array.Copy(buf, 0, e.IPHeaderBuffer, 0, (int)e.HeaderLength);
                     //把buf中的包中内容赋给PacketArrivedEventArgs中的MessageBuffer
                     Array.Copy(buf, (int)e.HeaderLength, e.MessageBuffer, 0, (int)e.MessageLength);
-                    //把buf中的数据复制到RecievBuffer中
-                    Array.Copy(buf, 0, e.ReceiveBuffer, 0, (int)e.PacketLength);
+
+
+                    //如果是TCP或UDP协议，则生成IP数据包
+                    if (temp_protocol == 6 || temp_protocol == 17)
+                    {
+                        byte[] data = new byte[e.PacketLength];
+                        Array.Copy(buf, 0, data, 0, e.PacketLength);
+                        e.ReceiveBuffer = NetUtils.GeneratLinkData(e.OriginationAddress
+                            , e.DestinationAddress
+                            , PacketType.IPv4
+                            , data);
+                    }
+                    else
+                    {
+                        e.ReceiveBuffer = new byte[e.PacketLength];
+                        Array.Copy(buf, 0, e.ReceiveBuffer, 0, e.PacketLength);
+                    }
                 }
                 catch { }
             }
